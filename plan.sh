@@ -1,22 +1,23 @@
 : “${DD_API_KEY?'DD_API_KEY is required'}”
 : “${ENV?'ENV is required'}”
-: “${GCP_PROJECT_NAME?'GCP_PROJECT_NAME is required'}”
-: “${GCP_ZONE?'GCP_ZONE is required'}”
 : “${GIT_CLONE_STRING?'ENV is required'}”
 : “${GOOGLE_APPLICATION_CREDENTIALS?'GOOGLE_APPLICATION_CREDENTIALS is required'}”
-: “${K8S_CLUSTER_NAME?'K8S_CLUSTER_NAME is required'}”
 : “${METRIC_NAME?'METRIC_NAME is required'}”
 : “${TEAM?'TEAM is required'}”
 : “${TF_PATH?'TF_PATH is required'}”
 
-echo "authing..."
+echo "authing google..."
 gcloud auth activate-service-account \
   --key-file=$GOOGLE_APPLICATION_CREDENTIALS || exit 1
 shred $GOOGLE_APPLICATION_CREDENTIALS -u
-gcloud container clusters get-credentials $K8S_CLUSTER_NAME \
+
+if [[ -z $K8S_CLUSTER_NAME ]]; then
+  echo "authing gke"
+  gcloud container clusters get-credentials $K8S_CLUSTER_NAME \
   --project=$GCP_PROJECT_NAME \
   --zone=$GCP_ZONE \
   || exit 1
+fi
 
 cd /home/tf
 echo "verifying github public key fingerprint..."

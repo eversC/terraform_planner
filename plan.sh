@@ -10,6 +10,7 @@
 
 echo "authing..."
 gcloud auth activate-service-account --key-file=key.json || exit 1
+shred key.json -u
 gcloud container clusters get-credentials $CLUSTER_NAME --project=$PROJECT_NAME --zone=$ZONE || exit 1
 
 echo "cloning $GIT_CLONE_STRING..."

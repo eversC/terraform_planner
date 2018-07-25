@@ -1,18 +1,20 @@
-: “${CLUSTER_NAME?'CLUSTER_NAME is required'}”
 : “${DD_API_KEY?'DD_API_KEY is required'}”
 : “${ENV?'ENV is required'}”
+: “${GCP_PROJECT_NAME?'GCP_PROJECT_NAME is required'}”
+: “${GCP_ZONE?'GCP_ZONE is required'}”
+: “${GIT_CLONE_STRING?'ENV is required'}”
 : “${GOOGLE_APPLICATION_CREDENTIALS?'GOOGLE_APPLICATION_CREDENTIALS is required'}”
+: “${K8S_CLUSTER_NAME?'K8S_CLUSTER_NAME is required'}”
 : “${METRIC_NAME?'METRIC_NAME is required'}”
-: “${PROJECT_NAME?'PROJECT_NAME is required'}”
 : “${TEAM?'TEAM is required'}”
 : “${TF_PATH?'TF_PATH is required'}”
-: “${ZONE?'ZONE is required'}”
 
 echo "authing..."
 gcloud auth activate-service-account --key-file=key.json || exit 1
 shred key.json -u
-gcloud container clusters get-credentials $CLUSTER_NAME --project=$PROJECT_NAME --zone=$ZONE || exit 1
+gcloud container clusters get-credentials $K8S_CLUSTER_NAME --project=$GCP_PROJECT_NAME --zone=$GCP_ZONE || exit 1
 
+cd /home/tf
 echo "cloning $GIT_CLONE_STRING..."
 git clone --quiet --depth 1 $GIT_CLONE_STRING || exit 1
 cd $TF_PATH

@@ -10,8 +10,8 @@
 : “${TF_PATH?'TF_PATH is required'}”
 
 echo "authing..."
-gcloud auth activate-service-account --key-file=key.json || exit 1
-shred key.json -u
+gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS || exit 1
+shred $GOOGLE_APPLICATION_CREDENTIALS -u
 gcloud container clusters get-credentials $K8S_CLUSTER_NAME --project=$GCP_PROJECT_NAME --zone=$GCP_ZONE || exit 1
 
 cd /home/tf

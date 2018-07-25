@@ -7,17 +7,20 @@ Currently only [Google](https://www.terraform.io/docs/providers/google) and
 [Kubernetes](https://www.terraform.io/docs/providers/kubernetes) providers are
 supported, though there's definitely scope for more to be added.
 
+Only Github is supported, in terms of the repo where you hold your terraform
+config.
+
 ## environment variables
 
 | name        | required?           | default  | purpose |
 | ------------- |:-------------:|:-----:|:-----:|
 |`DD_API_KEY`      | y |  | Datadog API key |
 |`ENV`      | y |  | name of environment (used as a tag in Datadog metric) |
-|`GCP_PROJECT_NAME`      | y |  | name of GCP project |
-|`GCP_ZONE`      | y |  | name of GCP zone that the k8s cluster is running in |
+|`GCP_PROJECT_NAME`      | n |  | name of GCP project the gke cluster is running in|
+|`GCP_ZONE`      | n |  | name of GCP zone that the gke cluster is running in |
 |`GIT_CLONE_STRING`      | y |  | ssh string used to clone a repo, e.g. `git@github.com:my_org/my_repo.git` |
 |`GOOGLE_APPLICATION_CREDENTIALS`      | y |  | path to the service-account key.json |
-|`K8S_CLUSTER_NAME`     | y |  | name of k8s cluster |
+|`K8S_CLUSTER_NAME`     | n |  | name of k8s cluster |
 |`METRIC_NAME`      | y |  | name of Datadog metric |
 |`POST_COMMIT_WAIT_MINS`      | n | 10 | if a commit has been made to the git repo within this time, skip the run |
 |`TEAM`      | y |  | name of team (used as a tag in Datadog metric) |
@@ -26,6 +29,13 @@ supported, though there's definitely scope for more to be added.
 |`TF_PLAN_ARGS`      | n | "" | args to supply the [terraform plan command](https://www.terraform.io/docs/commands/plan.html) |
 
 ## notes
+
+* It's recommended to create a [Deploy Key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
+to give the `terraform_planner` access to your git repo.
+
+* You'll need to drop the ssh key into `~/.ssh` (`/home/tf/`). The `plan.sh` 
+script verifies github's public key fingerprint, and upon a successful check,
+adds the key to `known_hosts`.
 
 * The script won't ever be running `terraform apply`, so the service-account 
 used should be locked down to read-only scopes for the resources it needs.

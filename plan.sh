@@ -9,7 +9,6 @@
 echo "authing google..."
 gcloud auth activate-service-account \
   --key-file=$GOOGLE_APPLICATION_CREDENTIALS || exit 1
-shred $GOOGLE_APPLICATION_CREDENTIALS -u
 
 if [[ -z $K8S_CLUSTER_NAME ]]; then
   echo "authing gke"
@@ -24,7 +23,7 @@ echo "verifying github public key fingerprint..."
 GH_FINGERPRINT=SHA256:$(ssh-keyscan github.com 2> /dev/null > githubKey \
   && ssh-keygen -lf githubKey | sed -e 's/.*SHA256:\(.*\)github.com.*/\1/') \
   && curl https://help.github.com/articles/github-s-ssh-key-fingerprints/ -s \
-  | grep -q $(echo $GH_FINGERPRINT) && echo $? || exit 1
+  | grep -q $(echo $GH_FINGERPRINT) || exit 1
 cat githubKey >> /home/tf/.ssh/known_hosts
 echo "cloning $GIT_CLONE_STRING..."
 git clone --quiet --depth 1 $GIT_CLONE_STRING || exit 1

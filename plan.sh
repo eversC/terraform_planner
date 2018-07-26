@@ -10,7 +10,7 @@ echo "authing google..."
 gcloud auth activate-service-account \
   --key-file=$GOOGLE_APPLICATION_CREDENTIALS || exit 1
 
-if [[ -z $K8S_CLUSTER_NAME ]]; then
+if [[ ! -z $K8S_CLUSTER_NAME ]]; then
   echo "authing gke"
   gcloud container clusters get-credentials $K8S_CLUSTER_NAME \
   --project=$GCP_PROJECT_NAME \
@@ -42,12 +42,13 @@ fi
 if [ $mins_since_last_commit -gt $wait_mins ]; then
   echo "terraforming..."
   terraform init $TF_INIT_ARGS &>/dev/null
-  terraform plan $TF_PLAN_ARGS -no-color > tf_plan.json -detailed-exitcode; echo $? > status.txt
+  terraform plan $TF_PLAN_ARGS -no-color > tf_plan.json -detailed-exitcode; \
+    echo $? > status.txt
   status="$(cat status.txt)"
   currenttime=$(date +%s)
 
   echo "posting metric to datadog..."
-  curl  -X POST -H "Content-type: application/json" \
+  curl -s -X POST -H "Content-type: application/json" \
   -d "{ \"series\" :
            [{\"metric\":\"$METRIC_NAME\",
             \"points\":[[$currenttime, $status]],

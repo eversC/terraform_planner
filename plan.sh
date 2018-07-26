@@ -39,7 +39,7 @@ else
   wait_mins=$POST_COMMIT_WAIT_MINS
 fi
 
-if [ $mins_since_last_commit -gt $POST_COMMIT_WAIT_MINS ]; then
+if [ $mins_since_last_commit -gt wait_mins ]; then
   echo "terraforming..."
   terraform init $TF_INIT_ARGS &>/dev/null
   terraform plan $TF_PLAN_ARGS -no-color > tf_plan.json -detailed-exitcode; echo $? > status.txt

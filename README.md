@@ -45,4 +45,9 @@ enabled, it's recommended to set the 'missing data' threshold value in Datadog
 to more than the `POST_COMMIT_WAIT_MINS` value. Otherwise, every time a commit
 is made to the git repo, the missing data alert will be fired.
 
+* Ensure the time window in the Datadog monitor alert condition is less than the
+frequency of the `terraform_planner` run. This is to prevent the metric being 
+included in two adjacent time chunks (meaning you would get a count of 2
+if a status of 1 was outputted in subsequent runs).
+
 * Contributions are very welcome (please branch or fork and raise PR).

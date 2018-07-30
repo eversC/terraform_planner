@@ -1,7 +1,8 @@
 # Terraform_Planner
 
-This produces a Docker image that can be run periodically to run a `terraform
-plan`, and post the resulting status code to Datadog.
+This produces a [Docker image](https://hub.docker.com/r/eversc/terraform_planner/) 
+that can be run periodically to run a `terraform plan`, and post the
+resulting status code to Datadog.
 
 Currently only [Google](https://www.terraform.io/docs/providers/google) and 
 [Kubernetes](https://www.terraform.io/docs/providers/kubernetes) providers are

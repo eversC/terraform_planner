@@ -1,4 +1,4 @@
-# terraform_planner
+# Terraform_Planner
 
 This produces a Docker image that can be run periodically to run a `terraform
 plan`, and post the resulting status code to Datadog.
@@ -10,7 +10,7 @@ supported, though there's definitely scope for more to be added.
 Only Github is supported, in terms of the repo where you hold your terraform
 config.
 
-## environment variables
+## Environment Variables
 
 | name        | required?           | default  | purpose |
 | ------------- |:-------------:|:-----:|:-----:|
@@ -28,7 +28,7 @@ config.
 |`TF_PATH`     | y |  |  |
 |`TF_PLAN_ARGS`      | n | "" | args to supply the [terraform plan command](https://www.terraform.io/docs/commands/plan.html) |
 
-## notes
+## Notes
 
 * It's recommended to create a [Deploy Key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
 to give the `terraform_planner` access to your git repo.

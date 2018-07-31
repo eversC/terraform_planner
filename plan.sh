@@ -16,15 +16,14 @@ if [[ $api_check_status != 200 ]]; then
   exit 1
 fi
 
-echo "authing google..."
-gcloud auth activate-service-account \
-  --key-file=$GOOGLE_APPLICATION_CREDENTIALS || exit 1
-
 if [[ ! -z $K8S_CLUSTER_NAME ]]; then
+  echo "authing google..."
+  gcloud auth activate-service-account \
+    --key-file=$GOOGLE_APPLICATION_CREDENTIALS || exit 1
   echo "authing gke..."
   gcloud container clusters get-credentials $K8S_CLUSTER_NAME \
-  --project=$GCP_PROJECT_NAME \
-  --zone=$GCP_ZONE \
+    --project=$GCP_PROJECT_NAME \
+    --zone=$GCP_ZONE \
   || exit 1
 fi
 

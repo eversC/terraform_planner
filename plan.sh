@@ -68,8 +68,14 @@ fi
 
 if [ $mins_since_last_commit -gt $wait_mins ]; then
   echo "terraforming..."
-  terraform init $TF_INIT_ARGS &>/dev/null
-  terraform plan $TF_PLAN_ARGS -no-color > tf_plan.json -detailed-exitcode; \
+  terraform init -backend-config=encryption_key=$ENC_KEY \
+    -var datadog_api_key=$DD_API_KEY \
+    -var datadog_app_key=$DD_APP_KEY \
+    -backend-config=./backend.tfvars &>/dev/null
+  terraform plan -var encryption_key=$ENC_KEY \
+    -var datadog_api_key=$DD_API_KEY \
+    -var datadog_app_key=$DD_APP_KEY \
+    -var-file=./backend.tfvars -no-color > tf_plan.json -detailed-exitcode; \
     echo $? > status.txt
   status="$(cat status.txt)"
   currenttime=$(date +%s)
@@ -77,10 +83,10 @@ if [ $mins_since_last_commit -gt $wait_mins ]; then
   echo "posting metric to datadog..."
   curl -s -X POST -H "Content-type: application/json" \
   -d "{ \"series\" :
-           [{\"metric\":\"$METRIC_NAME\",
+           [{\"metric\":\"$DD_METRIC_NAME\",
             \"points\":[[$currenttime, $status]],
             \"type\":\"count\",
-            \"tags\":[\"team:$TEAM\",\"environment:$ENV\"]}
+            \"tags\":[\"team:$DD_TEAM\",\"environment:$DD_ENV\"]}
           ]
   }" \
   "https://api.datadoghq.com/api/v1/series?api_key=$DD_API_KEY"

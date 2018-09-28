@@ -68,15 +68,9 @@ fi
 
 if [ $mins_since_last_commit -gt $wait_mins ]; then
   echo "terraform init..."
-  terraform init -backend-config=encryption_key=$ENC_KEY \
-    -var datadog_api_key=$DD_API_KEY \
-    -var datadog_app_key=$DD_APP_KEY \
-    -backend-config=./backend.tfvars
+  terraform init "$TF_INIT_ARGS" &>/dev/null
   echo "terraform plan..."
-  terraform plan -var encryption_key=$ENC_KEY \
-    -var datadog_api_key=$DD_API_KEY \
-    -var datadog_app_key=$DD_APP_KEY \
-    -var-file=./backend.tfvars -no-color > tf_plan.json -detailed-exitcode; \
+  terraform plan "$TF_PLAN_ARGS" -no-color > tf_plan.json -detailed-exitcode; \
     echo $? > status.txt
   status="$(cat status.txt)"
   currenttime=$(date +%s)

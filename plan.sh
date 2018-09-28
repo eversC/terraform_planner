@@ -1,4 +1,3 @@
-TF_PATH is required
 config_file="./tf_planner.conf"
 if [ ! -z $CONFIG_PATH ] ; then
   config_file=$CONFIG_PATH

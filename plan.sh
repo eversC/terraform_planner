@@ -67,11 +67,12 @@ else
 fi
 
 if [ $mins_since_last_commit -gt $wait_mins ]; then
-  echo "terraforming..."
+  echo "terraform init..."
   terraform init -backend-config=encryption_key=$ENC_KEY \
     -var datadog_api_key=$DD_API_KEY \
     -var datadog_app_key=$DD_APP_KEY \
-    -backend-config=./backend.tfvars &>/dev/null
+    -backend-config=./backend.tfvars
+  echo "terraform plan..."
   terraform plan -var encryption_key=$ENC_KEY \
     -var datadog_api_key=$DD_API_KEY \
     -var datadog_app_key=$DD_APP_KEY \

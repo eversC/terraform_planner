@@ -1,10 +1,28 @@
-: “${DD_API_KEY?'DD_API_KEY is required'}”
-: “${ENV?'ENV is required'}”
-: “${GIT_CLONE_STRING?'ENV is required'}”
-: “${GOOGLE_APPLICATION_CREDENTIALS?'GOOGLE_APPLICATION_CREDENTIALS is required'}”
-: “${METRIC_NAME?'METRIC_NAME is required'}”
-: “${TEAM?'TEAM is required'}”
-: “${TF_PATH?'TF_PATH is required'}”
+TF_PATH is required
+config_file="./tf_planner.conf"
+if [ ! -z $CONFIG_PATH ] ; then
+  config_file=$CONFIG_PATH
+fi
+
+if [ -f $config_file ] ; then
+IFS="="
+while read -r name value
+do
+export "$name"="$value"
+done < $config_file
+fi
+
+[ -z "$DD_API_KEY" ] && echo "DD_API_KEY is required" && invalid=true
+[ -z "$DD_ENV" ] && echo "DD_ENV is required" && invalid=true
+[ -z "$DD_METRIC_NAME" ] && echo "DD_METRIC_NAME is required" && invalid=true
+[ -z "$DD_TEAM" ] && echo "DD_TEAM is required" && invalid=true
+[ -z "$GIT_CLONE_STRING" ] && echo "GIT_CLONE_STRING is required" && invalid=true
+[ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] && echo "GOOGLE_APPLICATION_CREDENTIALS is required" && invalid=true
+[ -z "$TF_PATH" ] && echo "TF_PATH is required" && invalid=true
+
+if [ "$invalid" = true ] ; then
+    exit 1
+fi
 
 echo "verifying Datadog API Key..."
 api_check_status=$(curl -s -o /dev/null -w "%{http_code}" \

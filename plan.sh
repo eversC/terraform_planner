@@ -84,8 +84,8 @@ if [ $mins_since_last_commit -gt $wait_mins ]; then
   echo "posting metric to datadog..."
   curl -s -X POST -H "Content-type: application/json" \
   -d "{ \"series\" :
-           [{\"metric\":\"$DD_METRIC_NAME\",
-            \"points\":[[$currenttime, $status]],
+           [{\"metric\":\"$DD_METRIC_NAME.$status\",
+            \"points\":[[$currenttime, 1]],
             \"type\":\"count\",
             \"tags\":[\"team:$DD_TEAM\",\"environment:$DD_ENV\"]}
           ]
